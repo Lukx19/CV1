@@ -1,0 +1,2 @@
+A = imread('awb.jpg');
+

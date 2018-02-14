@@ -59,8 +59,10 @@ switch path_type
         
         % =================================================================
         % YOUR CODE GOES HERE
-
-        height_map = (construct_surface(p, q, 'column') - construct_surface(p, q, 'row')) / 2;
+        
+        column_map = construct_surface(p, q, 'column');
+        row_map = construct_surface(p, q, 'row');
+        height_map = (column_map + row_map)/2 ;
 
         % =================================================================
 end

@@ -42,14 +42,20 @@ for x = 1:h
             i(n) = image_stack(x, y, n);
             scriptI(n, n) = i(n);
         end        
+        
         % solve scriptI * scriptV * g = scriptI * i to obtain g for this point
-        [g, ~] = linsolve(scriptI * scriptV, scriptI * i);
-
+        if shadow_trick == true
+            scriptI = diag(i);
+            g = linsolve(scriptI * scriptV, scriptI * i);
+        else
+            g = linsolve(scriptV, i);
+        end
         albedo(x,y) = norm(g);
         
         %   normal at this point is g / |g|
         normal(x, y, :) = g / norm(g);
     end
+   
 end
 
 % =========================================================================

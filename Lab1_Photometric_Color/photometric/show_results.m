@@ -4,15 +4,29 @@ function show_results( albedo, normals, SE )
 [h, w, ~] = size(normals);
 
 % plot the results
+
+% The first plot displays the Integrability check. We can check if the function is continuous.
+% As we can see in the plot, obviously the function is mostly continuous, but the edge of the
+% circle shows the radius of the sphere, the back of the sphere isn't modeled. 
+% Apart from of these points the sphere is modeled correctly.
+
 figure
 subplot(2, 3, 1);
 [X, Y] = meshgrid(1:w, 1:h);
 surf(X, Y, SE, gradient(SE));
 title('Integrability check: (dp / dy - dq / dx) ^2 ');
 
+
+
+% The second plot displays the reflectance of the image surface.
+% This is used to see if the properties of the illumination, namely V,
+% are correctly modeled. According to the image, the source vector is correctly modeled,
+% as the complete image has the pixelvalues ranging from zero to one.
+
 subplot(2, 3, 2);
 imshow(albedo);
 title('Albedo');
+
 
 subplot(2, 3, 3);
 minN = min(min(normals, [], 1), [], 2);

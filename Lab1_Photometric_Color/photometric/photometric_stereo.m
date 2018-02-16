@@ -25,7 +25,7 @@ SE(SE <= threshold) = NaN; % for good visualization
 fprintf('Number of outliers: %d\n\n', sum(sum(SE > threshold)));
 
 %% compute the surface height
-height_map = construct_surface( p, q , 'row');
+height_map = construct_surface( p, q , 'average');
 
 %% Display
 show_results(albedo, normals, SE);

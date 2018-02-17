@@ -33,31 +33,21 @@ normal = zeros(h, w, 3);
 %(h is row dimension and w the columns)
 for x = 1:h
     for y = 1:w
-        %   stack image values into a vector of length N (for N images)
-        %   and add to scriptI diagonal.
-        i = zeros(N, 1);
-        scriptI = zeros(N, N);
+        i = reshape(image_stack(x, y, :), N, 1); 
         
-        for n = 1:N
-            i(n) = image_stack(x, y, n);
-            scriptI(n, n) = i(n);
-        end        
+        I = diag(i);
         
-        % solve scriptI * scriptV * g = scriptI * i to obtain g for this point
-        if shadow_trick == true
-            scriptI = diag(i);
-            g = linsolve(scriptI * scriptV, scriptI * i);
+        if shadow_trick
+            [g, ~] = linsolve(I*scriptV, I*i);
         else
-            g = linsolve(scriptV, i);
+            [g, ~] = linsolve(scriptV, i);
         end
-        albedo(x,y) = norm(g);
         
-        %   normal at this point is g / |g|
-        normal(x, y, :) = g / norm(g);
+        albedo(x, y, 1) = norm(g);
+        
+        normal(x, y, :) = g / albedo(x, y, 1);
     end
-   
 end
-
 % =========================================================================
 
 end

@@ -15,7 +15,9 @@ function [new_image] = ConvertColorSpace(input_image, colorspace)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % convert image into double precision for conversions
+I = input_image;
 input_image = im2double(input_image);
+
 
 if strcmp(colorspace, 'opponent')
     new_image = rgb2opponent(input_image); % fill in this function
@@ -38,6 +40,7 @@ else
     return;
 end
 
-visualize(new_image); % fill in this function
+
+visualize(new_image,I); % fill in this function
 
 end

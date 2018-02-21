@@ -6,9 +6,14 @@ B = max(max(reflectance(:,:,3)));
 
 
 colored_reflectance = reflectance(:,:,:);
-reflectance(reflectance == R) = r;
-reflectance(reflectance == G) = g;
-reflectance(reflectance == B) = b;
+colored_reflectance(reflectance == R) = r;
+colored_reflectance(reflectance == G) = g;
+colored_reflectance(reflectance == B) = b;
 
-image_colored = iid_image_formation(reflectance, shading);
+image_colored = iid_image_formation(colored_reflectance, shading);
+
+
+
 end
+
+

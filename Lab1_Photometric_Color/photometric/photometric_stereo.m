@@ -6,7 +6,7 @@ disp('Part 1: Photometric Stereo')
 
 % obtain many images in a fixed view under different illumination
 disp('Loading images...')
-image_dir = 'photometrics_images/MonkeyGray/';   % TODO: get the path of the script
+image_dir = 'photometrics_images/SphereGray25/';   % TODO: get the path of the script
 %image_ext = '*.png';
 
 [image_stack, scriptV] = load_syn_images(image_dir);
@@ -25,13 +25,15 @@ SE(SE <= threshold) = NaN; % for good visualization
 fprintf('Number of outliers: %d\n\n', sum(sum(SE > threshold)));
 
 %% compute the surface height
-height_map = construct_surface( p, q );
+height_map = construct_surface( p, q , 'average');
+
+
 
 %% Display
 show_results(albedo, normals, SE);
 show_model(albedo, height_map);
 
-
+%{
 %% Face
 [image_stack, scriptV] = load_face_images('photometrics_images/yaleB02/');
 [h, w, n] = size(image_stack);
@@ -52,4 +54,4 @@ height_map = construct_surface( p, q );
 
 show_results(albedo, normals, SE);
 show_model(albedo, height_map);
-
+%}

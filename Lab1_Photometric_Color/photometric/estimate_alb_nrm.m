@@ -45,7 +45,11 @@ for x = 1:h
         
         albedo(x, y, 1) = norm(g);
         
-        normal(x, y, :) = g / albedo(x, y, 1);
+        if albedo(x, y, 1) > 0
+            normal(x, y, :) = g / albedo(x, y, 1);
+        else
+            normal(x, y, :) = zeros(size(g));
+        end
     end
 end
 % =========================================================================

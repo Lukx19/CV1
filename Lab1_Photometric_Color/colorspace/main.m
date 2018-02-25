@@ -4,7 +4,7 @@ clear
 clc
 close all
 
-I = imread('awb.jpg');
+I = imread('peppers.png');
 
 %J = ConvertColorSpace(I,'opponent');
  

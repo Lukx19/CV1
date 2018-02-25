@@ -39,7 +39,7 @@ for i = 1:nfiles
     X = str2double(name(1:m));
     n = strfind(name,'.png')-1;
     Y = str2double(name(m+2:n));
-    V(i, :) = [X, Y, Z];
+    V(i, :) = [-X, Y, Z];
 end
 
 % normalization

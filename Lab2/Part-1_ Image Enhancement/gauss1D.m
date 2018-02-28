@@ -5,8 +5,9 @@ function G = gauss1D( sigma , kernel_size )
     end
     %% solution  
     r = floor(kernel_size/2);
-    for x = -radius:radius
+    for x = -r:r
         G(x + r + 1) = exp((-1/2)*(x/sigma)^2)/(sigma*sqrt(2*pi));
     end
     G = G./sum(G);
+    
 end

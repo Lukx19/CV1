@@ -10,7 +10,7 @@ err_msg  = 'Image not available.';
 
 % Control settings
 visFlag       = false;    %  Set to true to visualize filter responses.
-smoothingFlag = false;   %  Set to true to postprocess filter outputs.
+smoothingFlag = true;   %  Set to true to postprocess filter outputs.
 
 %% Read image
 switch image_id
@@ -72,7 +72,31 @@ orientations = 0:dTheta:(pi/2);
 
 % Define the set of sigmas for the Gaussian envelope. Sigma here defines 
 % the standard deviation, or the spread of the Gaussian. 
-sigmas = [1,2]; 
+%universal
+smooth = 5;
+%sigmas=[0.05,0.6,2];
+%sigmas=[0.2,0.6,1.3,1.8,3];
+%smooth = 1.5 * sigmas(1);
+%sigmas = [1,2,3];
+%lambdas = [2];
+
+%dog
+sigmas=[0.05,0.6,2];
+
+%bear
+%sigmas=[0.18,0.5,0.9,2];
+
+%bird1
+%sigmas=[0.2,0.8,1];
+
+
+%bird2
+%smooth = 0.1;
+%sigmas = [0.65]; 
+
+% cow 
+% smooth = 0.2
+% sigmas = [0.05,0.2,0.4];
 
 % Now you can create the filterbank. We provide you with a MATLAB struct
 % called gaborFilterBank in which we will hold the filters and their
@@ -158,9 +182,9 @@ end
 % \\ Hint: (real_part^2 + imaginary_part^2)^(1/2) \\
 featureMags =  cell(length(gaborFilterBank),1);
 for jj = 1:length(featureMaps)
-    real_part = featureMaps{jj}(:,:,1);
-    imag_part = featureMaps{jj}(:,:,2);
-    featureMags{jj} = uint8((double(real_part).^2 + double(imag_part).^2).^(0.5));
+    real_part = im2double(featureMaps{jj}(:,:,1));
+    imag_part = im2double(featureMaps{jj}(:,:,2));
+    featureMags{jj} = ((real_part.^2 + imag_part.^2).^0.5);
     
     % Visualize the magnitude response if you wish.
     if visFlag
@@ -190,6 +214,10 @@ if smoothingFlag
         % i)  filter the magnitude response with appropriate Gaussian kernels
         % ii) insert the smoothed image into features(:,:,jj)
     %END_FOR
+    for jj = 1:length(featureMags)
+        % features(:,:,jj) = imgaussfilt(featureMags{jj},sigma);
+        features(:,:,jj) = imfilter(featureMags{jj}, fspecial('gaussian',5,smooth),'replicate');
+    end
 else
     % Don't smooth but just insert magnitude images into the matrix
     % called features.
@@ -212,9 +240,16 @@ features = reshape(features, numRows * numCols, []);
 
 % \\ TODO: i)  Implement standardization on matrix called features. 
            %          ii) Return the standardized data matrix.
-for i =1 : length(featureMags)
-    features(i,:) = (features(i,:) - mean(features(i,:))) ./ std(features(i,:));
-end
+     features = zscore(features,0,2);
+%for i =1 : length(featureMags)
+    % features(i,:) = (features(i,:) - mean(features(i,:))) ./ std(features(i,:));
+    %features(i,:) = bsxfun(@minus, features(i,:), mean(features(i,:)));
+    %features(i,:) = bsxfun(@rdivide,features(i,:),std(features(i,:)));
+    
+  %  features(:,i) = bsxfun(@minus, features(i,:), mean(features(i,:)));
+  %  features(:,i) = bsxfun(@rdivide,features(i,:),std(features(i,:)));
+%end
+
 
 % (Optional) Visualize the saliency map using the first principal component 
 % of the features matrix. It will be useful to diagnose possible problems 
@@ -232,6 +267,7 @@ imshow(feature2DImage,[]), title('Pixel representation projected onto first PC')
 %            MATLAB's built-in kmeans function.
 tic
 % \\TODO: Return cluster labels per pixel
+% ,'Replicates',1
 pixLabels = kmeans(features,k);
 ctime = toc;
 fprintf('Clustering completed in %.3f seconds.\n', ctime);

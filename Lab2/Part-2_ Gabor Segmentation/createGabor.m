@@ -58,8 +58,8 @@ sinCarrier = createSin(rot_x, lambda, psi);
 
 % Modulate (multiply) Gaussian envelope with the carriers to compute 
 % the real and imaginary components of the omplex Gabor filter. 
-myGabor_real =   gaussianEnv * cosCarrier;
-myGabor_imaginary = gaussianEnv * sinCarrier;
+myGabor_real =   gaussianEnv .* cosCarrier;
+myGabor_imaginary = gaussianEnv .* sinCarrier;
 
 % Pack myGabor_real and myGabor_imaginary into myGabor.
 myGabor(:,:,1) = myGabor_real;
@@ -78,7 +78,7 @@ function rotMat = generateRotationMatrix(theta)
 % Returns the rotation matrix. 
 % \\ Hint: https://en.wikipedia.org/wiki/Rotation_matrix \\
 % \\TODO: code the rotation matrix given theta.
-rotMat = [cos(theta),-sin(theta);sin(theta),cos(theta)]; 
+rotMat = [cos(theta),sin(theta);-sin(theta),cos(theta)]; 
 end
 
 % ----------------------------------------------------------
@@ -86,7 +86,7 @@ function cosCarrier = createCos(rot_x, lambda, psi)
 % ----------------------------------------------------------
 % Returns the 2D cosine carrier. 
 % \\TODO: Implement the cosine given rot_x, lambda and psi.
-cosCarrier = cos(2*pi* rot_x / lambda + psi);
+cosCarrier = cos((2*pi * rot_x) / lambda + psi);
 
 % Reshape the vector representation to matrix.
 cosCarrier = reshape(cosCarrier, sqrt(length(cosCarrier)), []);
@@ -108,8 +108,8 @@ function gaussEnv = createGauss(rot_x, rot_y, gamma, sigma)
 % ----------------------------------------------------------
 % Returns the 2D Gaussian Envelope. 
 % \\TODO: Implement the Gaussian envelope.
-gaussEnv = exp(rot_x.^2 + gamma^2 * rot_y.^2 / 2 * sigma^2);
 
+gaussEnv = exp(-0.5*((rot_x.^2 + gamma^2 * rot_y.^2)/sigma^2 ));
 % Reshape the vector representation to matrix.
 gaussEnv = reshape(gaussEnv, sqrt(length(gaussEnv)), []);
 end

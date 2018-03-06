@@ -20,7 +20,7 @@ function [row, column] = lucas_kanade_algorithm(image1, image2, window_size ,r, 
             region2 = image2((x_end - window_size+1):x_end, (y_end - window_size+1):y_end);
 
             % For each region compute A, AT and b; then estimate optical flow as given in equation (20).
-            imdouble = double(region1);
+            imdouble = im2double(region1);
             [Ix1, Iy1] = gradient(imdouble);
 
             Ix1 = Ix1(:);
@@ -53,7 +53,7 @@ function [row, column] = lucas_kanade_algorithm(image1, image2, window_size ,r, 
 
         row = [];
         column = [];
-        for corner = 1:size(r)
+        for corner = 1:length(r)
 
             x = round(c(corner));
             y = round(r(corner));
@@ -68,28 +68,34 @@ function [row, column] = lucas_kanade_algorithm(image1, image2, window_size ,r, 
             elseif y + floor(window_size/2) > w
                 y = w - floor(window_size/2);
             end
+          
+            w_half = floor(window_size/2);
+            region1 = (image1((y - w_half):(y + w_half+1),(x - w_half):(x + w_half+1)));
+            region2 = (image2((y - w_half):(y + w_half+1),(x - w_half):(x + w_half+1)));
 
-            region1 = image1((x - floor(window_size/2)):(x + floor(window_size/2)), (y - floor(window_size/2)):(y + floor(window_size/2)));
-            region2 = image2((x - floor(window_size/2)):(x + floor(window_size/2)), (y - floor(window_size/2)):(y + floor(window_size/2)));
 
-            [Ix1, Iy1] = gradient(double(region1));
-
+            [Ix1, Iy1] = imgradientxy(double(region1));
+            %figure();
+            %imshow(Ix1);
+            %hold on;
+            %saveas(gcf, strcat(string(corner),"1.jpg"))
+            
             Ix1 = Ix1(:);
             Iy1 = Iy1(:);
-            region_It = conv2(double(region1), ones(2), 'same') - conv2(double(region2), ones(2), 'same');
-
+            %region_It = conv2(double(region2), ones(2), 'same') - conv2(double(region1), ones(2), 'same');
+            region_It = double(region2) - double(region1);
             b = -region_It(:); % get b here
             A = [Ix1,Iy1];
-          
  
-            solution = pinv(A)*b; % solve linear over determined system
+            %solution = pinv(A)*b; % solve linear over determined system
+            %solution =pinv(A'*A) *A'*b;
+            solution = mldivide(A,b);
             X = [X, x];
             Y = [Y, y];
             Vx = [Vx, solution(1)];
             Vy = [Vy, solution(2)];
-            row = [row; r(corner)+ solution(2)];
-            column = [column; c(corner)+ solution(1)];
-        
+            row = [row; r(corner)+ 10* solution(2)];
+            column = [column; c(corner)+10* solution(1)];        
         end
         figure();
         imshow(image1);

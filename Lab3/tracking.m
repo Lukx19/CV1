@@ -20,7 +20,7 @@ function tracking(directory, image1, window_size)
     for file = files'
         % use the lucas kanade algorithm to calculate the velocity and the new corners.
         image2 = rgb2gray(imread(strcat(directory,file.name)));
-        [r, c] = lucas_kanade_algorithm(image1, image2, window_size,r, c, strcat(output_images,file.name));
+        [r, c] = lucas_kanade(image1, image2, window_size,r, c, strcat(output_images,file.name));
         image1 = image2;
     end
 

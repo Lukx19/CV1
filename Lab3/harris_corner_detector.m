@@ -25,7 +25,7 @@ function [H, r, c] = harris_corner_detector(image)
     H = (A .* C - power(B, 2)) - 0.04 .* power((A + C), 2);
     
     % Get rows and columns of detected corners.
-    constant = 97;
+    constant = 95;
     max = ordfilt2(H,k^2,ones(k));
     threshold = mean(mean(H)) * constant;
     H=(H==max)&(H>threshold);              % Find maxima.

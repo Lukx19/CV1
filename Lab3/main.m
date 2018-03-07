@@ -28,6 +28,7 @@ lucas_kanade_algorithm(sphere1, sphere2, window_size);
 set(0,'DefaultFigureVisible', 'off');
 
 % store the first image in the correct variable.
+window_size = 15;
 
 image1 = rgb2gray(imread('person_toy/00000001.jpg'));
 tracking('person_toy/', image1, window_size);
@@ -36,6 +37,6 @@ tracking('person_toy/', image1, window_size);
 image1 = rgb2gray(imread('pingpong/0000.jpeg'));
 tracking('pingpong/',image1, window_size);
 
-%set(0,'DefaultFigureVisible', 'on');
-%implay('output_images_person_toy/video.avi')
+set(0,'DefaultFigureVisible', 'on');
+implay('output_images_person_toy/video.avi')
 

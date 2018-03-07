@@ -94,8 +94,8 @@ function [row, column] = lucas_kanade(image1, image2, window_size ,r, c, image_n
             Y = [Y, y];
             Vx = [Vx, solution(1)];
             Vy = [Vy, solution(2)];
-            row = [row; r(corner)+ 10* solution(2)];
-            column = [column; c(corner)+10* solution(1)];        
+            row = [row; r(corner)+ 12* solution(2)];
+            column = [column; c(corner)+12* solution(1)];        
         end
         figure();
         imshow(image1);

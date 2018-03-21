@@ -27,13 +27,29 @@ Tm = affine2d(T2');
 wrapped = wrap(imgB,T,'non');
 wrapped2 = imwarp(imgB,Tm);
 
+
 figure;
 imshow(wrapped)
 figure;
 imshow(wrapped2)
-%rotated image
-%figure
-%imshow(boat1);
-%imshow(aligned_image)
-%imshow([boat1,aligned_image], [min(min(aligned_image)),max(max(aligned_image))]);
 
+
+%rotated image
+
+
+aligned_image = zeros(size(boat2));
+
+
+for x=1:size(aligned_image,1)
+    for y=1:size(aligned_image,2)
+        A = [x y 0 0 1 0; 0 0 x y 0 1];
+        coordinates = A*tp;
+        x_new = min(max(1,round(coordinates(1))),size(aligned_image,1));
+        y_new = min(max(1,round(coordinates(2))),size(aligned_image,2));
+        aligned_image(x_new,y_new) = boat2(x,y);
+    end
+end
+
+%rotated image
+figure;
+imshow([boat1,aligned_image], [min(min(aligned_image)),max(max(aligned_image))]);

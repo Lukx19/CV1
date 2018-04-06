@@ -1,9 +1,9 @@
-function [] = histograms(method, sift_type, dataset_cagetory)
-    subset_size = 50;
-    vocabulary_size = 400;
+function [] = histograms(method, sift_type, dataset_cagetory,vocabulary_size)
+    %vocabulary_size = 400;
     %file voc_size_str for finding the vocabulary file
-
-    voc_size_str = strcat('_',num2str(vocabulary_size));
+    subset_size = 50;
+    filenames = [];
+    voc_size_str = strcat('_', num2str(vocabulary_size));
 
     if strcmp(dataset_cagetory, 'test')
         category_list = string({'airplanes_test' 'cars_test' 'faces_test' 'motorbikes_test'});
@@ -11,6 +11,7 @@ function [] = histograms(method, sift_type, dataset_cagetory)
     
     if strcmp(dataset_cagetory, 'train')
         category_list = string({'airplanes_train' 'cars_train' 'faces_train' 'motorbikes_train'});
+        subset_size = 50;
     end
 
     extension = '*.jpg.mat';
@@ -31,13 +32,12 @@ function [] = histograms(method, sift_type, dataset_cagetory)
         file_list = dir(fullfile(category_list_dir, extension));
         
         dictionary_hist = {};
-        subset_size = size(file_list);
-
+        %subset_size = size(file_list);
+        display(size(file_list));
         %iterate over the SIFT features' files
         for j = 1:subset_size
             feature_file_path = strcat(feature_folder, method, '/', sift_type, '/', 'sift', '/', current_category, '/', file_list(j).name);
-
-
+            %display(feature_file_path);
             %read SIFT features for the specified image
             load(feature_file_path, 'sift');
 
@@ -56,14 +56,20 @@ function [] = histograms(method, sift_type, dataset_cagetory)
             
             %store histogram in a matrix
             histograms = cat(1, histograms, histogram);
-
+            filenames = cat(1, filenames, file_list(j).name);
+            
         end
-        disp(size(histograms));
         %save the histograms to a file
         path_histogram = strcat(feature_folder, method, '/', sift_type, '/', 'histograms', '/');
         mkdir(path_histogram);
         save(strcat(path_histogram, current_category, voc_size_str, '.mat'), 'histograms');
+        
+        
+        path_histogram_names = strcat(feature_folder, method, '/', sift_type, '/', 'histogram_names', '/');
+        mkdir(path_histogram_names);
+        save(strcat(path_histogram_names, current_category, voc_size_str, '.mat'), 'filenames');
 
+        
     end
 
 end

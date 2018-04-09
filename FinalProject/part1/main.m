@@ -1,88 +1,137 @@
 run('../vlfeat/toolbox/vl_setup')
 
+%method = 'keypoint' , 'dense'=
+%types = 'graySIFT', 'opponentSIFT', 'rgb_SIFT', 'RGB_SIFT'
 
-%% TRAINING PART
+vocabulary_size = 400;
+
 %% KEYPOINT grayscale, opponent, rgb SIFTs
+% TRAINING PART
 
 method = 'keypoint';
 dataset = 'train';
 
 type = 'graySIFT';
 
-%feature_set_creation(method, type, dataset); %extract SIFT features from whole dataset
+feature_set_creation(method, type, dataset); %extract SIFT features from whole dataset
 fprintf("feature creation is done ");
-%vocabulary_creation(method, type); %create vocabulary for this SIFT method and type
+vocabulary_creation(method, type, vocabulary_size); %create vocabulary for this SIFT method and type
 fprintf("vocabulary is created ");
-%histograms(method, type, dataset); %create histograms using the vocabulary
+histograms(method, type, dataset,vocabulary_size); %create histograms using the vocabulary
 fprintf("histograms for training is created ");
-[model1 , model2, model3, model4] = SVM_training(method, type); % SVM models
-fprintf("models are trained ");
 
+% TESTING PART
 
 dataset = 'test';
-%feature_set_creation(method, type, dataset); %extract SIFT features from whole dataset
-%histograms(method, type, dataset); %create test histograms using the vocabulary
+feature_set_creation(method, type, dataset); %extract SIFT features from whole dataset
+histograms(method, type, dataset, vocabulary_size); %create test histograms using the vocabulary
 
-
-
-
-%{
+%%%%%%%%%%%%%%%%%%%%%%%%
+% TRAINING PART
+dataset = 'train';
 
 type = 'opponentSIFT';
 feature_set_creation(method, type,dataset);
-vocabulary_creation(method, type); %create vocabulary for this SIFT method and type
-histograms(method, type, dataset);
-models = train_SVM(method, type); % SVM models
+vocabulary_creation(method, type, vocabulary_size); %create vocabulary for this SIFT method and type
+histograms(method, type, dataset,vocabulary_size);
+
+% TESTING PART
+
+dataset = 'test';
+feature_set_creation(method, type, dataset); %extract SIFT features from whole dataset
+histograms(method, type, dataset,vocabulary_size); %create test histograms using the vocabulary
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TRAINING PART
+method = 'keypoint';
+dataset = 'train';
 type = 'rgbSIFT';
 feature_set_creation(method, type,dataset);
-vocabulary_creation(method, type); %create vocabulary for this SIFT method and type
-histograms(method, type, dataset);
-models = train_SVM(method, type); % SVM models
+vocabulary_creation(method, type,vocabulary_size); %create vocabulary for this SIFT method and type
+histograms(method, type, dataset,vocabulary_size);
 
 
+% TESTING PART
+
+dataset = 'test';
+feature_set_creation(method, type, dataset); %extract SIFT features from whole dataset
+histograms(method, type, dataset,vocabulary_size); %create test histograms using the vocabulary
+
+
+% TRAINING PART
+dataset = 'train';
+type = 'RGB_SIFT';
+feature_set_creation(method, type,dataset);
+vocabulary_creation(method, type,vocabulary_size); %create vocabulary for this SIFT method and type
+histograms(method, type, dataset,vocabulary_size);
+
+% TESTING PART
+
+dataset = 'test';
+feature_set_creation(method, type, dataset); %extract SIFT features from whole dataset
+histograms(method, type, dataset,vocabulary_size); %create test histograms using the vocabulary
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% DENSE grayscale, opponent, rgb SIFTs
+% TRAINING PART
 
 method = 'dense';
 dataset = 'train';
 
 type = 'graySIFT';
 feature_set_creation(method, type, dataset); %extract SIFT features from whole dataset
-vocabulary_creation(method, type); %create vocabulary for this SIFT method and type
-histograms(method, type, dataset);
-models = train_SVM(method, type); % SVM models
+vocabulary_creation(method, type,vocabulary_size); %create vocabulary for this SIFT method and type
+histograms(method, type, dataset,vocabulary_size);
 
+% TESTING PART
 
+dataset = 'test';
+feature_set_creation(method, type, dataset); %extract SIFT features from whole dataset
+histograms(method, type, dataset,vocabulary_size); %create test histograms using the vocabulary
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TRAINING PART
+
+dataset = 'train';
 type = 'opponentSIFT';
 feature_set_creation(method, type,dataset);
-vocabulary_creation(method, type); %create vocabulary for this SIFT method and type
-histograms(method, type, dataset);
-models = train_SVM(method, type); % SVM models
+vocabulary_creation(method, type,vocabulary_size); %create vocabulary for this SIFT method and type
 
 
+% TESTING PART
+
+dataset = 'test';
+feature_set_creation(method, type, dataset); %extract SIFT features from whole dataset
+histograms(method, type, dataset,vocabulary_size); %create test histograms using the vocabulary
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TRAINING PART
+dataset = 'train';
 type = 'rgbSIFT';
 feature_set_creation(method, type,dataset);
-vocabulary_creation(method, type); %create vocabulary for this SIFT method and type
-histograms(method, type, dataset);
-models = train_SVM(method, type); % SVM models
+vocabulary_creation(method, type,vocabulary_size); %create vocabulary for this SIFT method and type
+histograms(method, type, dataset,vocabulary_size);
 
-%}
+% TESTING PART
 
-%{
-%construct vocabulary
-method = 'dense';
-type = 'rgbSIFT';
+dataset = 'test';
+feature_set_creation(method, type, dataset); %extract SIFT features from whole dataset
+histograms(method, type, dataset,vocabulary_size); %create test histograms using the vocabulary
 
-%vocabulary_creation(method, type);
+% TRAINING PART
+dataset = 'train';
+type = 'RGB_SIFT';
+feature_set_creation(method, type,dataset);
+vocabulary_creation(method, type,vocabulary_size); %create vocabulary for this SIFT method and type
+histograms(method, type, dataset,vocabulary_size);
+
+% TESTING PART
+
+dataset = 'test';
+feature_set_creation(method, type, dataset); %extract SIFT features from whole dataset
+histograms(method, type, dataset,vocabulary_size); %create test histograms using the vocabulary
 
 
-%histograms(method, type, 'test');
 
-models = train_SVM(method, type);
-load('../Caltech4/FeatureData/dense/rgbSIFT/histograms/cars_test_400.mat','histograms');
-
-labels_cat = cat(1, cat(1, zeros(subset_size, 1), ones(subset_size, 1)), zeros(subset_size, 1),zeros(subset_size-1, 1));
-}
-
-%}

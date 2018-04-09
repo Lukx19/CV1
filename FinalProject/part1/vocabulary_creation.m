@@ -1,7 +1,6 @@
-function [] = vocabulary_creation(method, sift_type)
+function [] = vocabulary_creation(method, sift_type, vocabulary_size)
 
-    vocabulary_size = 400;
-    %subset_size = 100;
+    %vocabulary_size = 400;
         
     voc_size_str = strcat('_',num2str(vocabulary_size));
     
@@ -32,9 +31,10 @@ function [] = vocabulary_creation(method, sift_type)
     end
     
     %run kmeans algorithm on all of the features
+    display(size(features_ALL));
     [~,C] = kmeans_fast(double(features_ALL)', vocabulary_size);
     C = C';
-    
+   
 
     %store vocabulary to file
     vocabulary_file_path = strcat(feature_folder, method, '/', sift_type, '/', 'vocabulary', '/');

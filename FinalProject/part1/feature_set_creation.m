@@ -8,6 +8,7 @@ function [] = feature_set_creation(method ,sift_type, dataset_cagetory)
     
     if strcmp(dataset_cagetory, 'train')
         category_list = string({'airplanes_train' 'cars_train' 'faces_train' 'motorbikes_train'});
+        subset_size = 50;
     end
     
     image_folder = strcat('../Caltech4/ImageData/');
@@ -24,7 +25,7 @@ function [] = feature_set_creation(method ,sift_type, dataset_cagetory)
         path_feature_folder = strcat(feature_folder, method, '/', sift_type, '/', 'sift', '/', current_category, '/');
         mkdir(path_feature_folder);
         
-        subset_size = size(file_list) / 2;
+        %subset_size = size(file_list) / 2;
         %iterate over the images of the selected folder
         for j = 1:subset_size
             
@@ -35,7 +36,7 @@ function [] = feature_set_creation(method ,sift_type, dataset_cagetory)
             end
 
             %extract SIFT descriptors
-            [sift] = extract_sift(image, method, sift_type);
+            [sift] = get_sift(image, method, sift_type);
             
             %save them to a file
             save(strcat(path_feature_folder, file_list(j).name, '.mat'), 'sift');

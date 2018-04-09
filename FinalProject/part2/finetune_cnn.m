@@ -2,7 +2,7 @@ function [net, info, expdir] = finetune_cnn(varargin)
 
 %% Define options
 run(fullfile(fileparts(mfilename('fullpath')), ...
-  '..', '..', '..', 'matlab', 'vl_setupnn.m')) ;
+  '..', 'matconvnet', 'matlab', 'vl_setupnn.m')) ;
 
 opts.modelType = 'lenet' ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
@@ -11,23 +11,22 @@ opts.expDir = fullfile('data', ...
   sprintf('cnn_assignment-%s', opts.modelType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
-opts.dataDir = './data/' ;
+opts.dataDir = './data/';
 opts.imdbPath = fullfile(opts.expDir, 'imdb-caltech.mat');
 opts.whitenData = true ;
 opts.contrastNormalization = true ;
 opts.networkType = 'simplenn' ;
 opts.train = struct() ;
 opts = vl_argparse(opts, varargin) ;
-if ~isfield(opts.train, 'gpus'), opts.train.gpus = []; end;
+if ~isfield(opts.train, 'gpus'), opts.train.gpus = []; end
 
-opts.train.gpus = [1];
+opts.train.gpus = [];
 
 
 
 %% update model
 
 net = update_model();
-
 %% TODO: Implement getCaltechIMDB function below
 
 if exist(opts.imdbPath, 'file')
@@ -83,8 +82,61 @@ classes = {'airplanes', 'cars', 'faces', 'motorbikes'};
 splits = {'train', 'test'};
 
 %% TODO: Implement your loop here, to create the data structure described in the assignment
+dataDir = '../Caltech4';
+train_file = fopen(fullfile(dataDir, 'ImageSets','train.txt'),'r');
 
+filenames = {};
+ii = 1;
+tline = fgetl(train_file);
+while ischar(tline)
+    filenames{ii} = tline;
+    ii = ii +1;
+    tline = fgetl(train_file);
+end
+fclose(train_file);
 
+test_file = fopen(fullfile(dataDir, 'ImageSets','test.txt'),'r');
+tline = fgetl(test_file);
+while ischar(tline)
+    filenames{ii} = tline;
+    ii = ii + 1;
+    tline = fgetl(test_file);
+end
+fclose(test_file);
+
+length(filenames)
+filenames;
+
+ll = length(filenames); 
+sets = zeros(1,ll);
+labels = zeros(1,ll);
+data = zeros(32,32,3,ll);
+data = single(data);
+for i=1:length(filenames)
+    tline = filenames{i};
+    class = strsplit(tline,'_');
+    set = strsplit(class{1,2},"/");
+    set = set{1,1};
+    class = class{1,1};
+    I = imread(fullfile(dataDir,'ImageData',strcat(tline,'.jpg')));
+    sz = size(I);
+    rescale = double(min(sz(2)/32, sz(1)/32));
+    Ir = imresize(I,1/rescale);
+    sz = size(Ir);
+    x = floor(sz(2)/2);
+    y = floor(sz(1)/2);
+    I = Ir(y-15:y+16, x-15:x+16, :);
+    I = im2single(I);
+    if(length(size(I)) == 3)
+        data(:,:,:,i) = I(:,:,:);
+    else
+        data(:,:,1,i) = I(:,:);
+    end
+    sets(i) = find(strcmp(splits, set));
+    labels(i) = find(strcmp(classes, class));
+end
+
+size(labels)
 %%
 % subtract mean
 dataMean = mean(data(:, :, :, sets == 1), 4);
